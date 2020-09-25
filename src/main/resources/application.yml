@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://hostname/dbname
+    username: username
+    password: password
+    hikari:
+      minimum-idle: 3
+      maximum-pool-size: 10
+      max-lifetime: 3000
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
