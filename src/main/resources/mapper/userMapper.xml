@@ -7,17 +7,25 @@
         <result column="username" property="username"/>
         <result column="password" property="password"/>
         <result column="email" property="email"/>
-        <result column="firstName" property="firstName"/>
-        <result column="lastName" property="lastName"/>
+        <result column="first_name" property="firstName"/>
+        <result column="last_name" property="lastName"/>
         <result column="enabled" property="enabled"/>
-        <result column="accountNonExpired" property="accountNonExpired"/>
-        <result column="credentialsNonExpired" property="credentialsNonExpired"/>
-        <result column="accountNonLocked" property="accountNonLocked"/>
-        <collection property="authorities" javaType="java.util.ArrayList" ofType="com.oauth2.authcenter.entity.Permission" column="id" select="com.oauth2.authcenter.dao.PermissionDao.getPermissions"/>
+        <result column="account_non_expired" property="accountNonExpired"/>
+        <result column="credentials_non_expired" property="credentialsNonExpired"/>
+        <result column="account_non_locked" property="accountNonLocked"/>
+        <collection property="authorities" javaType="java.util.ArrayList" ofType="com.oauth2.authcenter.entity.Permission" column="id" select="getPermissions"/>
+    </resultMap>
+    <resultMap id="permission" type="com.oauth2.authcenter.entity.Permission">
+        <result column="scope" property="scope"/>
+        <result column="authority" property="authority"/>
+        <result column="alias" property="alias"/>
     </resultMap>
 
     <select id="getUserByName" parameterType="java.lang.String" resultMap="user">
-        SELECT id,username,password,email,"firstName","lastName",enabled,"accountNonExpired","credentialsNonExpired","accountNonLocked" FROM auth_user WHERE username = #{username};
+        SELECT id,username,password,email,first_name,last_name,enabled,account_non_expired,credentials_non_expired,account_non_locked FROM oauth_user WHERE username = #{username};
+    </select>
+    <select id="getPermissions" parameterType="int" resultMap="permission">
+        SELECT scope,authority,alias FROM oauth_permission WHERE id = #{userId};
     </select>
 
 </mapper>

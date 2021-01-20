@@ -3,11 +3,13 @@
 <mapper namespace="com.oauth2.authcenter.dao.PermissionDao">
 
     <resultMap id="permission" type="com.oauth2.authcenter.entity.Permission">
+        <result column="scope" property="scope"/>
         <result column="authority" property="authority"/>
+        <result column="alias" property="alias"/>
     </resultMap>
 
-    <select id="getPermissions" parameterType="int" resultType="java.util.ArrayList" resultMap="permission">
-        SELECT authority FROM auth_permission WHERE "userId" = #{id};
+    <select id="getPermissionById" parameterType="int" resultMap="permission">
+        SELECT scope,authority,alias FROM oauth_permission WHERE id = #{id};
     </select>
 
 </mapper>
