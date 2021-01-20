@@ -1,6 +1,6 @@
 package com.oauth2.authcenter.config;
 
-import com.oauth2.authcenter.service.AuthUserDetailService;
+import com.oauth2.authcenter.service.impl.AuthUserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    AuthUserDetailService authUserDetailService;
+    AuthUserDetailServiceImpl authUserDetailService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
