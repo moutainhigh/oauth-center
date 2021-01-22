@@ -25,7 +25,7 @@
         SELECT id,username,password,email,first_name,last_name,enabled,account_non_expired,credentials_non_expired,account_non_locked FROM oauth_user WHERE username = #{username};
     </select>
     <select id="getPermissions" parameterType="int" resultMap="permission">
-        SELECT scope,authority,alias from (SELECT id from oauth_user_permission WHERE id = #{userId}) a left join oauth_permission b on a.id = b.id;
+        SELECT scope,authority,alias from (SELECT id from oauth_user_permission WHERE user_id = #{userId}) a left join oauth_permission b on a.id = b.id;
     </select>
 
 </mapper>
