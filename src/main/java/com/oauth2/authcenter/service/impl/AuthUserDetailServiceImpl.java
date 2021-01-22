@@ -17,7 +17,6 @@ public class AuthUserDetailServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         AuthUser user = userDao.getUserByName(s);
-        System.out.println(user.getAuthorities());
         if(null==user){
             return  null;
         }else {
