@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.oauth2.authcenter.dao.UserDao">
 
-    <resultMap id="user" type="com.oauth2.authcenter.entity.AuthUser">
+    <resultMap id="user" type="com.oauth2.authcenter.entity.AuthUserDetails">
         <id column="id" property="id"/>
         <result column="username" property="username"/>
         <result column="password" property="password"/>
@@ -13,19 +13,29 @@
         <result column="account_non_expired" property="accountNonExpired"/>
         <result column="credentials_non_expired" property="credentialsNonExpired"/>
         <result column="account_non_locked" property="accountNonLocked"/>
-        <collection property="authorities" javaType="java.util.ArrayList" ofType="com.oauth2.authcenter.entity.Permission" column="id" select="getPermissions"/>
+        <collection property="groups" javaType="java.util.ArrayList" ofType="com.oauth2.authcenter.entity.Permission" column="id" select="getGroups"/>
+        <collection property="roles" javaType="java.util.ArrayList" ofType="com.oauth2.authcenter.entity.Role" column="id" select="getRoles"/>
     </resultMap>
-    <resultMap id="permission" type="com.oauth2.authcenter.entity.Permission">
-        <result column="scope" property="scope"/>
-        <result column="authority" property="authority"/>
+    <resultMap id="group" type="com.oauth2.authcenter.entity.Group">
+        <result column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="name" property="name"/>
+        <result column="alias" property="alias"/>
+    </resultMap>
+    <resultMap id="role" type="com.oauth2.authcenter.entity.Role">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
         <result column="alias" property="alias"/>
     </resultMap>
 
     <select id="getUserByName" parameterType="java.lang.String" resultMap="user">
         SELECT id,username,password,email,first_name,last_name,enabled,account_non_expired,credentials_non_expired,account_non_locked FROM oauth_user WHERE username = #{username};
     </select>
-    <select id="getPermissions" parameterType="int" resultMap="permission">
-        SELECT scope,authority,alias from (SELECT id from oauth_user_permission WHERE user_id = #{userId}) a left join oauth_permission b on a.id = b.id;
+    <select id="getGroups" parameterType="int" resultMap="group">
+        SELECT id,parent_id,name,alias from (SELECT group_id from oauth_user_group WHERE user_id = #{userId}) a left join oauth_group b on a.group_id = b.id;
+    </select>
+    <select id="getRoles" parameterType="int" resultMap="role">
+        SELECT id,name,alias from (SELECT role_id from oauth_user_role WHERE user_id = #{userId}) a left join oauth_role b on a.role_id = b.id;
     </select>
 
 </mapper>

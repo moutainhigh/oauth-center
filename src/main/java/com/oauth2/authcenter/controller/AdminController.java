@@ -1,16 +1,34 @@
 package com.oauth2.authcenter.controller;
 
+import com.oauth2.authcenter.entity.AuthUserDetails;
+import com.oauth2.authcenter.service.impl.AuthUserDetailServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
-@RestController
+@Controller
 public class AdminController {
-    @RequestMapping("/home")
-    void home(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.getWriter().write("{\"code\":0}");
+    @Autowired
+    AuthUserDetailServiceImpl authUserDetailService;
+
+    @RequestMapping("/login")
+    String login() {
+        return "login";
+    }
+
+    @RequestMapping("/getUserInfo")
+    @ResponseBody
+    AuthUserDetails home() {
+        AuthUserDetails userDetails = null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String currentUserName = authentication.getName();
+            userDetails = (AuthUserDetails) authUserDetailService.loadUserByUsername(currentUserName);
+        }
+        return userDetails;
     }
 }

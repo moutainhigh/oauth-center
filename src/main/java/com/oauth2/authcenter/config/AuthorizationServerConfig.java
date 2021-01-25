@@ -18,8 +18,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @Resource
-    private TokenStore tokenStore;
+    @Resource(name = "redisTokenStore")
+    private TokenStore redisTokenStore;
 
     @Resource
     private DataSource dataSource;
@@ -31,6 +31,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
-        endpoints.authenticationManager(authenticationManager).tokenStore(tokenStore);
+        endpoints.authenticationManager(authenticationManager).tokenStore(redisTokenStore);
     }
 }

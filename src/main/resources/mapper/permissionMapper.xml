@@ -8,8 +8,8 @@
         <result column="alias" property="alias"/>
     </resultMap>
 
-    <select id="getPermissionById" parameterType="int" resultMap="permission">
-        SELECT scope,authority,alias FROM oauth_permission WHERE id = #{id};
+    <select id="getPermissions" resultMap="permission">
+        SELECT scope,authority,alias from (SELECT permission_id from oauth_object_permission WHERE object_id = #{objectId} and object_type = #{objectType}) a left join oauth_permission b on a.permission_id = b.id;
     </select>
 
 </mapper>
