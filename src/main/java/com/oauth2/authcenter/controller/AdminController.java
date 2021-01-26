@@ -20,7 +20,7 @@ public class AdminController {
         return "login";
     }
 
-    @RequestMapping("/getUserInfo")
+    @RequestMapping("/")
     @ResponseBody
     AuthUserDetails home() {
         AuthUserDetails userDetails = null;

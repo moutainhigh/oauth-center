@@ -1,32 +1,58 @@
 package com.oauth2.authcenter.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Data
 @Setter
 @Getter(value = AccessLevel.PUBLIC)
-@ToString(exclude = "password")
+@Entity
+@Table(name = "oauth_user")
 public class AuthUserDetails implements UserDetails {
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Column(name = "username")
     private String username;
     @JsonIgnore
+    @Column(name = "password")
     private String password;
+    @Column(name = "email")
     private String email;
+    @Column(name = "first_name")
     private String firstName;
+    @Column(name = "last_name")
     private String lastName;
+    @Column(name = "enabled")
     private boolean enabled;
+    @Column(name = "account_non_expired")
     private boolean accountNonExpired;
+    @Column(name = "credentials_non_expired")
     private boolean credentialsNonExpired;
+    @Column(name = "account_non_locked")
     private boolean accountNonLocked;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "oauth_object_permission",joinColumns = @JoinColumn(name = "object_id"),inverseJoinColumns = @JoinColumn(name = "permission_id"))
+    @Fetch(value = FetchMode.SUBSELECT)
     private List<Permission> authorities;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "oauth_user_group",joinColumns = @JoinColumn(name = "user_id"),inverseJoinColumns = @JoinColumn(name = "group_id"))
+    @Fetch(value = FetchMode.SUBSELECT)
     private List<Group> groups;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "oauth_user_role",joinColumns = @JoinColumn(name = "user_id"),inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @Fetch(value = FetchMode.SUBSELECT)
     private List<Role> roles;
 
     @Override
@@ -64,18 +90,19 @@ public class AuthUserDetails implements UserDetails {
         return this.enabled;
     }
 
-    public boolean hasPermission(String fllName) {
-        Stream<Permission> permissionStream = authorities.stream().filter(permission -> permission.getAuthority().equals(fllName));
-        return permissionStream.count() > 0;
+    public boolean hasGroup(String groupMame)
+    {
+        return this.groups.stream().anyMatch(group -> group.getName() == groupMame);
     }
 
-    public boolean hasRole(String name) {
-        Stream<Role> roleStream = roles.stream().filter(role -> role.getName().equals(name));
-        return roleStream.count() > 0;
+    public boolean hasRole(String roleMame)
+    {
+        return this.roles.stream().anyMatch(role -> role.getName() == roleMame);
     }
 
-    public boolean isInGroup(String name) {
-        Stream<Group> groupStream = groups.stream().filter(group -> group.getName().equals(name));
-        return groupStream.count() > 0;
+    public boolean hasPermission(String permissionFullMame)
+    {
+        return this.authorities.stream().anyMatch(permission -> permission.getAuthority() == permissionFullMame);
     }
+
 }

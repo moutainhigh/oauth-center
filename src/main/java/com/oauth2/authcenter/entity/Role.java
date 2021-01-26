@@ -2,12 +2,19 @@ package com.oauth2.authcenter.entity;
 
 import lombok.*;
 
+import javax.persistence.*;
+
 @Data
 @Setter
 @Getter(value = AccessLevel.PUBLIC)
-@ToString
+@Entity
+@Table(name = "oauth_role")
 public class Role {
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "alias")
     private String alias;
 }
