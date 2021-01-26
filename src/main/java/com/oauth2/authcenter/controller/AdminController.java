@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class AdminController {
     @Autowired
-    AuthUserDetailServiceImpl authUserDetailService;
+    private AuthUserDetailServiceImpl authUserDetailService;
 
     @RequestMapping("/login")
     String login() {
